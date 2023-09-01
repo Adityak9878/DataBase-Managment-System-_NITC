@@ -14,25 +14,23 @@ RecBuffer::RecBuffer(int blockNum) : BlockBuffer::BlockBuffer(blockNum) {}
 
 // load the block header into the argument pointer
 int BlockBuffer::getHeader(struct HeadInfo *head) {
- // unsigned char buffer[BLOCK_SIZE];
-
-  // read the block at this.blockNum into the buffer
- //  Disk::readBlock(buffer,this->blockNum);
-  // populate the numEntries, numAttrs and numSlots fields in *head
+  //unsigned char buffer[BLOCK_SIZE];
    unsigned char *bufferPtr;
   int ret = loadBlockAndGetBufferPtr(&bufferPtr);
   if (ret != SUCCESS) {
-    return ret;   // return any errors that might have occured in the process
+    return ret;
   }
 
 
+  // read the block at this.blockNum into the buffer
+   //Disk::readBlock(buffer,this->blockNum);
+  // populate the numEntries, numAttrs and numSlots fields in *head
   memcpy(&head->numSlots, bufferPtr + 24, 4);
-  memcpy(&head->numSlots, bufferPtr + 24, 4);
-  memcpy(&head->numEntries, bufferPtr +16/* fill this */, 4);
-  memcpy(&head->numAttrs, bufferPtr +20/* fill this */, 4);
+  memcpy(&head->numEntries, bufferPtr+16/* fill this */, 4);
+  memcpy(&head->numAttrs, bufferPtr+20/* fill this */, 4);
   memcpy(&head->rblock, bufferPtr+12/* fill this */, 4);
   memcpy(&head->lblock, bufferPtr+8/* fill this */, 4);
-  //memcpy(&head->pblock, buffer + 4, 4);
+  memcpy(&head->pblock, bufferPtr + 4, 4);
 
   return SUCCESS;
 }
@@ -49,14 +47,14 @@ int RecBuffer::getRecord(union Attribute *rec, int slotNum) {
 
   // read the block at this.blockNum into a buffer
   
-  // unsigned char buffer[BLOCK_SIZE];
-  //  Disk::readBlock(buffer,this->blockNum);
-
+  //unsigned char buffer[BLOCK_SIZE];
+  // Disk::readBlock(buffer,this->blockNum);
   unsigned char *bufferPtr;
   int ret = loadBlockAndGetBufferPtr(&bufferPtr);
   if (ret != SUCCESS) {
-    return ret;
+    return ret;   // return any errors that might have occured in the process
   }
+
 
   /* record at slotNum will be at offset HEADER_SIZE + slotMapSize + (recordSize * slotNum)
      - each record will have size attrCount * ATTR_SIZE
@@ -64,7 +62,7 @@ int RecBuffer::getRecord(union Attribute *rec, int slotNum) {
   */
 
   int recordSize = attrCount * ATTR_SIZE;
-  unsigned char *slotPointer = bufferPtr +32 + slotCount+(recordSize*slotNum)/*calculate buffer + offset */;
+  unsigned char *slotPointer = bufferPtr+32+slotCount+(recordSize*slotNum)/* calculate buffer + offset */;
 
   // load the record into the rec data structure
   memcpy(rec, slotPointer, recordSize);
@@ -90,4 +88,55 @@ int BlockBuffer::loadBlockAndGetBufferPtr(unsigned char **buffPtr) {
   *buffPtr = StaticBuffer::blocks[bufferNum];
 
   return SUCCESS;
+}
+
+
+/* used to get the slotmap from a record block
+NOTE: this function expects the caller to allocate memory for `*slotMap`
+*/
+int RecBuffer::getSlotMap(unsigned char *slotMap) {
+  unsigned char *bufferPtr;
+
+  // get the starting address of the buffer containing the block using loadBlockAndGetBufferPtr().
+  int ret = loadBlockAndGetBufferPtr(&bufferPtr);
+  if (ret != SUCCESS) {
+    return ret;
+  }
+
+  struct HeadInfo head;
+  // get the header of the block using getHeader() function
+ // BlockBuffer::getHeader(&head);
+  RecBuffer recordblock(this->blockNum);
+  HeadInfo header;
+  recordblock.getHeader(&header);
+
+  int slotCount =header.numSlots /* number of slots in block from header */;
+
+  // get a pointer to the beginning of the slotmap in memory by offsetting HEADER_SIZE
+  unsigned char *slotMapInBuffer = bufferPtr + HEADER_SIZE;
+
+  // copy the values from `slotMapInBuffer` to `slotMap` (size is `slotCount`)
+  
+  //memcpy(slotMap,slotMapInBuffer,slotCount);
+  for(int i=0;i<slotCount;i++){
+      *(slotMap+i)=*(slotMapInBuffer+i);
+  }
+
+  return SUCCESS;
+}
+
+int compareAttrs(union Attribute attr1, union Attribute attr2, int attrType) {
+
+    double diff;
+    if (attrType == STRING)
+        diff = strcmp(attr1.sVal, attr2.sVal);
+
+    else
+        diff = attr1.nVal - attr2.nVal;
+
+    
+    if (diff > 0 )  return 1;
+    if (diff < 0 )  return -1;
+    else return 0;
+    
 }

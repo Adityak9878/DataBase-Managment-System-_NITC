@@ -61,10 +61,15 @@ int Frontend::select_attrlist_from_table(char relname_source[ATTR_SIZE], char re
   return SUCCESS;
 }
 
+// int Frontend::select_from_table_where(char relname_source[ATTR_SIZE], char relname_target[ATTR_SIZE],
+//                                       char attribute[ATTR_SIZE], int op, char value[ATTR_SIZE]) {
+//   // Algebra::select
+//   return SUCCESS;
+// }
+
 int Frontend::select_from_table_where(char relname_source[ATTR_SIZE], char relname_target[ATTR_SIZE],
                                       char attribute[ATTR_SIZE], int op, char value[ATTR_SIZE]) {
-  // Algebra::select
-  return SUCCESS;
+  return Algebra::select(relname_source, relname_target, attribute, op, value);
 }
 
 int Frontend::select_attrlist_from_table_where(char relname_source[ATTR_SIZE], char relname_target[ATTR_SIZE],
@@ -88,6 +93,11 @@ int Frontend::select_attrlist_from_join_where(char relname_source_one[ATTR_SIZE]
   // Algebra::join + project
   return SUCCESS;
 }
+
+// int Frontend::select_from_table_where(char relname_source[ATTR_SIZE], char relname_target[ATTR_SIZE],
+//                                       char attribute[ATTR_SIZE], int op, char value[ATTR_SIZE]) {
+//   return Algebra::select(relname_source, relname_target, attribute, op, value);
+// }
 
 int Frontend::custom_function(int argc, char argv[][ATTR_SIZE]) {
   // argc gives the size of the argv array

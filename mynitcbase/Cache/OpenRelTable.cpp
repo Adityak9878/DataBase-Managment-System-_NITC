@@ -4,14 +4,16 @@
 #include<cstdlib>
 //#include<stdio.h>
 
-AttrCacheEntry* createnewnode(){
+AttrCacheEntry* createnewnode()
+{
   AttrCacheEntry *node;
   node=(AttrCacheEntry*)malloc(sizeof(AttrCacheEntry));
   //node->next=nullptr;
   return node;
 }
 
-AttrCacheEntry* createlinkedlist(int n){
+AttrCacheEntry* createlinkedlist(int n)
+{
   AttrCacheEntry *temp=nullptr,*t=nullptr;
   temp = createnewnode();
   n--;
@@ -95,6 +97,23 @@ OpenRelTable::OpenRelTable() {
   
 }
 
+int OpenRelTable::getRelId(char relName[ATTR_SIZE]) 
+{
+  // if relname is RELCAT_RELNAME, return RELCAT_RELID
+  if(strcmp(RELCAT_RELNAME,relName)==0)
+    return RELCAT_RELID;
+  // if relname is ATTRCAT_RELNAME, return ATTRCAT_RELID
+  if(strcmp(ATTRCAT_RELNAME,relName)==0)
+    return ATTRCAT_RELID;
+  
+  if(strcmp(relName,"Students")==0)
+  return 2;
+
+  return E_RELNOTOPEN;
+}
+
 OpenRelTable::~OpenRelTable() {
   // free all the memory that you allocated in the constructor
 }
+
+
