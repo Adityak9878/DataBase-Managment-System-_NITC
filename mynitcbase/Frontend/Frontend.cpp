@@ -14,15 +14,15 @@ int Frontend::drop_table(char relname[ATTR_SIZE]) {
   return SUCCESS;
 }
 
-int Frontend::open_table(char relname[ATTR_SIZE]) {
-  // Schema::openRel
-  return SUCCESS;
-}
+// int Frontend::open_table(char relname[ATTR_SIZE]) {
+//   // Schema::openRel
+//   return SUCCESS;
+// }
 
-int Frontend::close_table(char relname[ATTR_SIZE]) {
-  // Schema::closeRel
-  return SUCCESS;
-}
+// int Frontend::close_table(char relname[ATTR_SIZE]) {
+//   // Schema::closeRel
+//   return SUCCESS;
+// }
 
 int Frontend::alter_table_rename(char relname_from[ATTR_SIZE], char relname_to[ATTR_SIZE]) {
   // Schema::renameRel
@@ -61,10 +61,15 @@ int Frontend::select_attrlist_from_table(char relname_source[ATTR_SIZE], char re
   return SUCCESS;
 }
 
+// int Frontend::select_from_table_where(char relname_source[ATTR_SIZE], char relname_target[ATTR_SIZE],
+//                                       char attribute[ATTR_SIZE], int op, char value[ATTR_SIZE]) {
+//   // Algebra::select
+//   return SUCCESS;
+// }
+
 int Frontend::select_from_table_where(char relname_source[ATTR_SIZE], char relname_target[ATTR_SIZE],
                                       char attribute[ATTR_SIZE], int op, char value[ATTR_SIZE]) {
-  // Algebra::select
-  return SUCCESS;
+  return Algebra::select(relname_source, relname_target, attribute, op, value);
 }
 
 int Frontend::select_attrlist_from_table_where(char relname_source[ATTR_SIZE], char relname_target[ATTR_SIZE],
@@ -89,6 +94,11 @@ int Frontend::select_attrlist_from_join_where(char relname_source_one[ATTR_SIZE]
   return SUCCESS;
 }
 
+// int Frontend::select_from_table_where(char relname_source[ATTR_SIZE], char relname_target[ATTR_SIZE],
+//                                       char attribute[ATTR_SIZE], int op, char value[ATTR_SIZE]) {
+//   return Algebra::select(relname_source, relname_target, attribute, op, value);
+// }
+
 int Frontend::custom_function(int argc, char argv[][ATTR_SIZE]) {
   // argc gives the size of the argv array
   // argv stores every token delimited by space and comma
@@ -96,4 +106,12 @@ int Frontend::custom_function(int argc, char argv[][ATTR_SIZE]) {
   // implement whatever you desire
 
   return SUCCESS;
+}
+
+int Frontend::open_table(char relname[ATTR_SIZE]) {
+  return Schema::openRel(relname);
+}
+
+int Frontend::close_table(char relname[ATTR_SIZE]) {
+  return Schema::closeRel(relname);
 }
