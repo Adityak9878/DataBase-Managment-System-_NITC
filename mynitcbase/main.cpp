@@ -3,46 +3,55 @@
 #include "Disk_Class/Disk.h"
 #include "FrontendInterface/FrontendInterface.h"
 #include<iostream>
-int main(int argc, char *argv[]) 
-{
+
+// int main(int argc, char *argv[]) 
+// {
+//   Disk disk_run;
+//   StaticBuffer buffer;
+//   OpenRelTable cache;
+
+  
+//  // for i = 0 and i = 1 (i.e RELCAT_RELID and ATTRCAT_RELID)
+//   for(int i=0;i<=2;i++)
+//   {
+//     //i=0  ->  RELCAT_ID
+//     //i=1  ->  ATTRCAT_ID
+//     //i=2  ->  FOR NEW INSERTED RELATION - EVENTS
+     
+//      RelCatEntry RelCatBuffer;
+//      RelCacheTable::getRelCatEntry(i,&RelCatBuffer);
+//      printf("Relation : %s\n ", RelCatBuffer.relName);
+
+//      for(int j=0;j<RelCatBuffer.numAttrs;j++)
+     
+//      {
+//          AttrCatEntry AttrCatBuffer;
+//          AttrCacheTable::getAttrCatEntry(i,j,&AttrCatBuffer);
+//          const char *attrType = AttrCatBuffer.attrType == NUMBER ? "NUM" : "STR";
+// 			   printf (" %s: %s\n", AttrCatBuffer.attrName, attrType);
+
+//      }
+
+//      printf("\n");
+
+//   }
+//       // get the relation catalog entry using RelCacheTable::getRelCatEntry()
+//       // printf("Relation: %s\n", relname);
+
+//       // for j = 0 to numAttrs of the relation - 1
+//       //     get the attribute catalog entry for (rel-id i, attribute offset j)
+//       //      in attrCatEntry using AttrCacheTable::getAttrCatEntry()
+
+//       //     printf("  %s: %s\n", attrName, attrType);
+  
+
+//   return 0;
+// }
+
+int main(int argc, char *argv[]) {
   Disk disk_run;
+  StaticBuffer buffer;
+  OpenRelTable cache;
 
-  // create objects for the relation catalog and attribute catalog
-  RecBuffer relCatBuffer(RELCAT_BLOCK);
-  RecBuffer attrCatBuffer(ATTRCAT_BLOCK);
-
-  HeadInfo relCatHeader;
-  HeadInfo attrCatHeader;
-
-  // load the headers of both the blocks into relCatHeader and attrCatHeader.
-  // (we will implement these functions later)
-  relCatBuffer.getHeader(&relCatHeader);
-  attrCatBuffer.getHeader(&attrCatHeader);
-
-  for (int i=0;i<relCatHeader.numEntries;i++/* i = 0 to total relation count */) 
-  {
-
-    Attribute relCatRecord[RELCAT_NO_ATTRS]; // will store the record from the relation catalog
-
-    relCatBuffer.getRecord(relCatRecord, i);
-
-    printf("Relation: %s\n", relCatRecord[RELCAT_REL_NAME_INDEX].sVal);
-
-    for (int j=0;j<attrCatHeader.numEntries;j++/* j = 0 to number of entries in the attribute catalog */) 
-    {
-
-      // declare attrCatRecord and load the attribute catalog entry into it
-       Attribute attrCatRecord[ATTRCAT_NO_ATTRS];
-       attrCatBuffer.getRecord(attrCatRecord,j);
-      if (strcmp(relCatRecord[RELCAT_REL_NAME_INDEX].sVal,attrCatRecord[ATTRCAT_REL_NAME_INDEX].sVal)==0/* attribute catalog entry corresponds to the current relation */) 
-      {
-        const char *attrType = attrCatRecord[ATTRCAT_ATTR_TYPE_INDEX].nVal == NUMBER ? "NUM" : "STR";
-      printf("  %s: %s\n", attrCatRecord[ATTRCAT_ATTR_NAME_INDEX].sVal/* get the attribute name */, attrType);
-      }
-      
-    }
-    printf("\n");
-  }
-
-  return 0;
-  }
+  return FrontendInterface::handleFrontend(argc, argv);
+}
