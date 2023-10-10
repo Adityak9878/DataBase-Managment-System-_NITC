@@ -604,5 +604,3 @@ void printHelp() {
   printf("run <filename> \n\t  -run commands from an input file in sequence. \n\n");
   printf("exit \n\t-Exit the interface\n");
 }
-
-
