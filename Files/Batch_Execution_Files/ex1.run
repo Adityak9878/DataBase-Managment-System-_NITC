@@ -1,0 +1,5 @@
+ALTER TABLE RENAME Books TO LibraryBooks;
+ALTER TABLE RENAME LibraryBooks COLUMN bookOwner TO lender;
+OPEN TABLE LibraryBooks;
+SELECT * FROM LibraryBooks INTO null WHERE price>0;
+exit
